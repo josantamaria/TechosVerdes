@@ -1,21 +1,39 @@
+//////////////////////////Librerias y constantes//////////////////////////
+#define PIN 34
 #define SAMPLES 10
 
+/////////////////////////////////Setup////////////////////////////////////
 void setup() {
   Serial.begin(115200);
   analogReadResolution(10);
 }
 
+//////////////////////////////////Loop////////////////////////////////////
 void loop() {
-  int Value = 0;
+  float adc_valor = voltage_filter(PIN);
+  float voltage_valor = voltage_filter(PIN);
+  println(adc_valor,0);
+  println(voltage_valor,2);
+}
 
-  // Promediar lecturas para reducir el ruido
-  for (int i = 0; i < SAMPLES; i++) {
-    Value += analogRead(36);
+/////////////////////////////////Funcionnes///////////////////////////////
+float adc_filter(int pin){
+  int value = 0;
+  for (int i=0; i<SAMPLES; i++) {
+    value += analogRead(pin);
     delay(10);
   }
-  
-  Value /= SAMPLES;
+  value /= SAMPLES;
+  return value;
+}
 
-  Serial.println("Lectura analogica: " + String(Value));
-
+float voltage_filter(int pin){
+  int value = 0;
+  for (int i=0; i<SAMPLES; i++) {
+    value += analogRead(pin);
+    delay(10);
+  }
+  value /= SAMPLES;
+  float voltage = value * 3.3 / 4095.0;
+  return voltage;
 }
